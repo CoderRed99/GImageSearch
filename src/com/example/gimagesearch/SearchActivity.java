@@ -64,6 +64,8 @@ public class SearchActivity extends Activity
 			@Override
 			public void onSuccess(JSONObject response)
 			{
+				Toast.makeText(SearchActivity.this, "https://ajax.googleapis.com/ajax/services/search/images?rsz=8&" 
+			+ "start=" + 0 + "&v=1.0&q=", Toast.LENGTH_SHORT).show();
 				JSONArray imageJsonResults = null;
 				try 
 				{
