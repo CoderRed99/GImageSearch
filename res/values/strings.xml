@@ -3,6 +3,41 @@
 
     <string name="app_name">GImageSearch</string>
     <string name="action_settings">Settings</string>
+    
     <string name="query_hint">Enter Search Term</string>
+    
+    <string name="title_activity_filter_settings">FilterSettingsActivity</string>
+    <string name="select_settings">Advanced search options</string>
+    <string name="sizes_setting">Image Size</string>
+    <string name="sizes_prompt">Choose Size</string>
+    <string name="colors_setting">Color Filter</string>
+    <string name="colors_prompt">Choose Color</string>
+    <string name="types_setting">Image Type</string>
+    <string name="types_prompt">Choose Type</string>
+    
+    <string name="site_setting">Site Filter</string>
+    <string name="site_prompt">Search a specific site?</string>
+    <string name="button_save">Save</string>
+    <string name="btn_result">onSendResult</string>
+    
+    
+    
+    
+    
+    <string name="select">Choose a country</string>
+    <string name="select2">Choose an item</string>
+    <string name="button_label">Submit</string>
+    <string name="button_add">+</string>
+    <string name="button_subtract">-</string>
+    <string name="button_multiply">*</string>
+    <string name="button_divide">/</string>
+    <string name="button_equals">=</string>
+
+    <string name="button_goBack">go back</string>
+    <string name="title_activity_display_result">Calculator result</string>
+    <string name="get_the_message_from_the_intent">get the message from the intent</string>
+<!--     <string name="message">this.returnMsg</string> -->
+    <string name="search_options">Select Advanced Search Options</string>
+    <string name="search_choices">Enter Choices</string>
 
 </resources>

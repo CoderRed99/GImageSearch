@@ -1,13 +1,20 @@
 package com.example.gimagesearch;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ImageResult
+import android.util.Log;
+
+public class ImageResult implements Serializable
 	{
+		/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5901172778641428393L;
 		private String fullUrl;
 		private String thumbUrl;
 		
@@ -16,7 +23,7 @@ public class ImageResult
 			try 
 			{
 				this.fullUrl = json.getString("url");
-				this.thumbUrl = json.getString("tburl");
+				this.thumbUrl = json.getString("tbUrl");
 			} catch (JSONException e)
 			{
 				this.fullUrl = null;
@@ -46,7 +53,12 @@ public class ImageResult
 			for (int x = 0; x < array.length(); x++)
 			{
 				try {
+					JSONObject test = array.getJSONObject(x);
+					Log.d("GImageSearch", test.toString());
+					ImageResult test2 = new ImageResult(array.getJSONObject(x));
+					Log.d("GImageSearch", test2.toString());
 					results.add(new ImageResult(array.getJSONObject(x)));
+					
 				} catch (JSONException e)
 				{
 					e.printStackTrace();

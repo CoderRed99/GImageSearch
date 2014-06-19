@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="${packageName}.${activityClass}" >
+<!--         tools:context="com.example.gimagesearch.SearchActivity" > -->
 
     <EditText
         android:id="@+id/etQuery"
