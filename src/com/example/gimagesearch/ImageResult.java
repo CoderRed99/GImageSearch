@@ -33,6 +33,8 @@ public class ImageResult implements Serializable
 		
 		public String getFullUrl() 
 		{
+			// Log.d("DEBUG", "full url from ImageResult getter");
+			// Log.d("DEBUG", fullUrl.toString());
 			return fullUrl;
 		}
 		

@@ -1,7 +1,6 @@
 package com.example.gimagesearch;
 
 import java.util.ArrayList;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +30,7 @@ public class SearchActivity extends Activity
 	Button btnSearch;
 	GridView gvResults;
 	final static int GET_RESULT_TEXT = 0;
+	int totalThumbUrls = 0;
 	ArrayList<ImageResult> imageResults = new ArrayList<ImageResult>();
 	ImageResultArrayAdapter imageAdapter;
 
@@ -46,13 +46,13 @@ public class SearchActivity extends Activity
 		gvResults.setOnItemClickListener( new OnItemClickListener() 
 		{
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {			
+			public void onItemClick(AdapterView<?> adapter, View parent,
+					int position, long rowId) 
+			{	
 				Intent i = new Intent(getApplicationContext(), ImageDisplayActivity.class);
 				ImageResult imageResult = imageResults.get(position);
-				i.putExtra("url", imageResult.getFullUrl());
-				// ImageResult ir = imageResults.get(position);
-				// i.putExtra("result", ir);
+
+				i.putExtra("result", imageResult);
 				startActivity(i);
 			}
 		});
@@ -62,29 +62,114 @@ public class SearchActivity extends Activity
 			public void onLoadMore(int page, int totalItemsCount) {
 				// Triggered only when new data needs to be appended to the list
 				// Add whatever code is needed to append new items to your AdapterView
-				getNextPageOfResults(); 
+				customLoadMoreDataFromApi(); 
 			}
 		});
 	}
 
-	private int totalThumbsRead =0;
-	
-	public void getNextPageOfResults() {
-		// this method asks for the next page of 8 results.
+	public void customLoadMoreDataFromApi() {
+		// TODO merge this one with the other query
 		String query = etQuery.getText().toString();
 		AsyncHttpClient client = new AsyncHttpClient();
 		// request looks like
 		// https://ajax.googleapis.com/ajax/services/search/images?q=Android&v=1.0
 		String url = "https://ajax.googleapis.com/ajax/services/search/images?";
 		String size = "rsz=8";
-		String offset = "&start=";     //change offset to paginate
+		// You paginate by changing the start see 24:00
+		String offset = "&start=";     
 		String ver = "&v=1.0";
 		String q = "&q=" + Uri.encode(query);  // drops space, illegal chars, etc
-		String url_with_args= url + size + offset + totalThumbsRead + ver + q;
+		String url_with_args= url + size + offset + totalThumbUrls + ver + q;
 		
-		// client.get(url_with_args, jh);
-		//Toast.makeText(this, "asked for page, startOffset=" + totalThumbsRead, Toast.LENGTH_SHORT).show();
+		client.get(url_with_args, jHandler);
 	}
+
+	JsonHttpResponseHandler jHandler = new JsonHttpResponseHandler () 
+	{
+		
+		@Override
+		public void onSuccess(JSONObject response) 
+		{
+			JSONArray imageJsonResults = null;
+			
+			try 
+			{
+				imageJsonResults = response.getJSONObject("responseData")
+						.getJSONArray("results");
+				
+				JSONObject jo = response.getJSONObject("responseData");
+				String formatJo = jo.toString(4);
+				Log.d("imagesearch", "response object ="+formatJo);
+				
+				ArrayList<ImageResult> alir = ImageResult.fromJSONArray(imageJsonResults);
+				totalThumbUrls += alir.size();
+				
+				imageAdapter.addAll(alir);
+				imageAdapter.notifyDataSetChanged();
+				Log.d("DEBUG", imageResults.toString());
+			} catch (JSONException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		@Override
+        public void onFailure(Throwable e, JSONObject response) 
+        {
+			Toast.makeText(SearchActivity.this, "onFailure reached ", Toast.LENGTH_SHORT).show();
+			Log.d("DEBUG", "onFailure was just called!");
+			Log.d("DEBUG", imageResults.toString());
+			Log.d("DEBUG", response.toString());
+        }
+	};
+	
+	public void onImageSearch(View v)
+	{ // TODO This looks like a hot mess, clean it up
+		String query = etQuery.getText().toString();
+		Toast.makeText(this, "Searching for: " + query, Toast.LENGTH_SHORT).show();
+		//Toast.makeText(this, "asked for page, startOffset=" + totalThumbUrls, Toast.LENGTH_SHORT).show();
+		AsyncHttpClient client = new AsyncHttpClient();
+		// https://ajax.googleapis.com/ajax/services/search/images?rsz=8&start=0&v=1.0&q=android
+		Log.d("LOG_TAG", "https://ajax.googleapis.com/ajax/services/search/images?rsz=8&" 
+				+ "start=" + 0 + "&v=1.0&q=" + Uri.encode(query));
+		client.get(
+				"https://ajax.googleapis.com/ajax/services/search/images?rsz=8&" 
+						// You paginate by changing the start see 24:00
+						+ "start=" + 0 + "&v=1.0&q=" + Uri.encode(query), 
+				new JsonHttpResponseHandler()
+		{
+			@Override
+			public void onSuccess(JSONObject response)
+			{
+				Log.d("DEBUG", "https://ajax.googleapis.com/ajax/services/search/images?rsz=8&" 
+						+ "start=" + 0 + "&v=1.0&q=");
+				JSONArray imageJsonResults = null;
+				try 
+				{
+					imageJsonResults = response.getJSONObject(
+							"responseData").getJSONArray("results");
+					imageResults.clear();
+					imageAdapter.addAll(ImageResult
+							.fromJSONArray(imageJsonResults));
+					Log.d("DEBUG", imageResults.toString());
+				} catch (JSONException e) 
+				{
+					e.printStackTrace();
+				}
+			}
+			
+			@Override
+	        public void onFailure(Throwable e, JSONObject response) 
+	        {
+				Toast.makeText(SearchActivity.this, "onFailure reached ", Toast.LENGTH_SHORT).show();
+				Log.d("DEBUG", "onFailure was just called!");
+				Log.d("DEBUG", imageResults.toString());
+				Log.d("DEBUG", response.toString());
+	        }
+			
+		});
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -102,6 +187,11 @@ public class SearchActivity extends Activity
 		// as you specify a parent activity in AndroidManifest.xml.
 		Log.d("DEBUG", "menu item selected was just called!");
 		Toast.makeText(this, "menu item selected", Toast.LENGTH_SHORT).show();
+		
+		Intent i = new Intent(this, FilterSettingsActivity.class);
+		Log.d("DEBUG", "onOptionsItemSelected(Menu--> intent");
+		Log.d("DEBUG", i.toString());
+		
 		startActivityForResult(
 				  new Intent(this, FilterSettingsActivity.class), 
 				    GET_RESULT_TEXT);
@@ -137,48 +227,6 @@ public class SearchActivity extends Activity
 		etQuery = (EditText) findViewById(R.id.etQuery);
 		btnSearch = (Button) findViewById(R.id.btnSearch);
 		gvResults = (GridView) findViewById(R.id.gvResults);
-	}
-	
-	public void onImageSearch(View v)
-	{
-		String query = etQuery.getText().toString();
-		Toast.makeText(this, "Searching for: " + query, Toast.LENGTH_SHORT).show();
-		AsyncHttpClient client = new AsyncHttpClient();
-		// https://ajax.googleapis.com/ajax/services/search/images?rsz=8&start=0&v=1.0&q=android
-		Log.d("LOG_TAG", "https://ajax.googleapis.com/ajax/services/search/images?rsz=8&" 
-				+ "start=" + 0 + "&v=1.0&q=" + Uri.encode(query));
-		client.get(
-				"https://ajax.googleapis.com/ajax/services/search/images?rsz=8&" 
-	// You paginate by changing the start see 24:00
-				+ "start=" + 0 + "&v=1.0&q=" + Uri.encode(query), 
-				new JsonHttpResponseHandler()
-		{
-			@Override
-			public void onSuccess(JSONObject response)
-			{
-				Log.d("DEBUG", "https://ajax.googleapis.com/ajax/services/search/images?rsz=8&" 
-			+ "start=" + 0 + "&v=1.0&q=");
-				JSONArray imageJsonResults = null;
-				try 
-				{
-					imageJsonResults = response.getJSONObject(
-							"responseData").getJSONArray("results");
-					imageResults.clear();
-					imageAdapter.addAll(ImageResult
-							.fromJSONArray(imageJsonResults));
-					Log.d("DEBUG", imageResults.toString());
-				} catch (JSONException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-			
-			@Override
-	        public void onFailure(Throwable e, JSONObject response) 
-	        {
-				Toast.makeText(SearchActivity.this, "onFailure reached ", Toast.LENGTH_SHORT).show();
-	        }
-			
-		});
+		Log.d("DEBUG", "setupViews was just called!");
 	}
 }

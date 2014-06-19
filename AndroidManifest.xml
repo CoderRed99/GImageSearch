@@ -25,6 +25,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.example.gimagesearch.ImageDisplayActivity"
+            android:label="@string/title_activity_image_display" >
+        </activity>
+        <activity
             android:name="com.example.gimagesearch.FilterSettingsActivity"
             android:label="@string/title_activity_filter_settings" >
         </activity>
