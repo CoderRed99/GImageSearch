@@ -25,14 +25,14 @@
     
     
     
-    <string name="select">Choose a country</string>
+<!--     <string name="select">Choose a country</string>
     <string name="select2">Choose an item</string>
     <string name="button_label">Submit</string>
     <string name="button_add">+</string>
     <string name="button_subtract">-</string>
     <string name="button_multiply">*</string>
     <string name="button_divide">/</string>
-    <string name="button_equals">=</string>
+    <string name="button_equals">=</string> -->
 
     <string name="button_goBack">go back</string>
     <string name="title_activity_display_result">Calculator result</string>

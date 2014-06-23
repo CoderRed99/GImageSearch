@@ -3,7 +3,7 @@
     <item
         android:id="@+id/menu_settings"
         android:showAsAction="ifRoom|withText"
-        android:icon="@drawable/ic_becool_launcher"
+        android:icon="@drawable/ic_settings_launcher"
         android:title="@string/action_settings" />
-    
+    	        <!-- android:onClick="onFilterSettings" -->
 </menu>

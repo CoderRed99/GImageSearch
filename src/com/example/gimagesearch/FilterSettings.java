@@ -4,10 +4,7 @@ import java.io.Serializable;
 
 public class FilterSettings implements Serializable
 {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -6031329807443369529L;
 	private String size;
 	private String color;
@@ -15,7 +12,12 @@ public class FilterSettings implements Serializable
 	private String site;
 
 	public FilterSettings()
-	{}
+	{
+		this.size = "xsmall";
+		this.color = "";
+		this.type = "";
+		this.site = "images.google.com";
+	}
 
 	public FilterSettings(String size, String color, String type, String site)
 	{

@@ -1,3 +1,4 @@
+
 How many hours did it take to complete?  I'm not gonna lie, it took me forever! I'd say I logged over 20 hours. I'm notoriously horrible about keeping track of 
 time (perhaps I subconsciously don't want to know how long it's taking). I will continue to try to get better at this.
 Which required and optional stories have you completed?
