@@ -44,4 +44,8 @@ On the positive side
 Why (you may ask) is my gif file not included in this README? I don't know how to do that yet, so it's in the repo
 It is not attractive, I appologize in advance      df
 
+
+[![ScreenShot](https://github.com/CoderRed99/GImageSearch/blob/master/GImageSearch2.gif)]
+licecap was used to create: <a href="https://github.com/CoderRed99/GImageSearch/blob/master/GImageSearch2.gif">GImageSearch</a>
+
 licecap gif was created: GImageSearch.gif
